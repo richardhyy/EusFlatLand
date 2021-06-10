@@ -6,7 +6,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 15
   },
   "church1.blueprint": {
     "yOffset": 0,
@@ -15,7 +15,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 45
+    "chance": 22
   },
   "desert_pyramid.blueprint": {
     "yOffset": -14,
@@ -27,7 +27,7 @@
     "biomes": [
       "DESERT"
     ],
-    "chance": 40
+    "chance": 3
   },
   "ender_portal.blueprint": {
     "yOffset": -40,
@@ -47,7 +47,7 @@
     "biomes": [
       "DESERT"
     ],
-    "chance": 40
+    "chance": 20
   },
   "haystack1.blueprint": {
     "yOffset": 0,
@@ -56,7 +56,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 25
+    "chance": 15
   },
   "haystack2.blueprint": {
     "yOffset": 0,
@@ -65,7 +65,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 25
+    "chance": 15
   },
   "parterre.blueprint": {
     "yOffset": 0,
@@ -74,7 +74,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "small_house1.blueprint": {
     "yOffset": 0,
@@ -84,7 +84,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "small_house2.blueprint": {
     "yOffset": 0,
@@ -94,7 +94,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 15
   },
   "small_house3.blueprint": {
     "yOffset": 0,
@@ -104,7 +104,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "small_house4.blueprint": {
     "yOffset": 0,
@@ -114,7 +114,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "small_house5.blueprint": {
     "yOffset": 0,
@@ -124,7 +124,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "small_house_deserted1.blueprint": {
     "yOffset": 0,
@@ -134,7 +134,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 5
   },
   "snow_house.blueprint": {
     "yOffset": 0,
@@ -161,7 +161,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 40
+    "chance": 10
   },
   "street_light_2.blueprint": {
     "yOffset": 0,
@@ -171,7 +171,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "vegetable_field1.blueprint": {
     "yOffset": 0,
@@ -180,7 +180,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "vegetable_field2.blueprint": {
     "yOffset": 0,
@@ -189,7 +189,7 @@
     ],
     "fillBaseWith": "DIRT",
     "biomes": null,
-    "chance": 30
+    "chance": 10
   },
   "well.blueprint": {
     "yOffset": 0,
