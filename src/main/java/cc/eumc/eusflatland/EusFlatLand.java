@@ -94,7 +94,7 @@ public final class EusFlatLand extends JavaPlugin {
             FlatLandStructure structure = new Gson().fromJson(value.toString(), FlatLandStructure.class);
             structure.blueprint = blueprint;
             structures.add(structure);
-            getLogger().info("Loaded: " + structureKV.getKey() + ": " + structureKV.getValue());
+            getLogger().info("Loaded: " + structureKV.getKey() + " (" + String.format("%s * %s * %s", blueprint.getXWidth(), blueprint.getYWidth(), blueprint.getZWidth()) + ") : " + structureKV.getValue());
         }
 
         return structures;

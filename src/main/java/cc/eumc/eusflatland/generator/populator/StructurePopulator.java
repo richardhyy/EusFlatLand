@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class StructurePopulator  extends BlockPopulator {
+public class StructurePopulator extends BlockPopulator {
     EusFlatLand plugin;
     List<FlatLandStructure> structures;
 
@@ -62,7 +63,27 @@ public class StructurePopulator  extends BlockPopulator {
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            // TODO: Fill base
+                            // Fill base
+                            if (structure.getFillBaseWith() != null) {
+//                                XYZ fillLocation = new XYZ(chunk.getX() * 16 + x, finalY - 1, chunk.getZ() * 16 + z);
+                                int xBase = chunk.getX() * 16;
+                                int zBase = chunk.getZ() * 16;
+                                for (int _x = xBase + x; _x <= xBase + x + structure.getBlueprint().getXWidth() - 1; _x++) {
+                                    for (int _z = zBase + z; _z <= zBase + z + structure.getBlueprint().getZWidth() - 1; _z++) {
+                                        for (int _y = finalY - 1; _y > 2; _y--) {
+                                            Block toFill = world.getBlockAt(_x, _y, _z);
+                                            if (toFill.getType() == Material.AIR || toFill.getType() == Material.WATER) {
+                                                toFill.setType(structure.getFillBaseWith());
+                                            } else {
+                                                break;
+                                            }
+//                                            fillLocation.y--;
+                                        }
+//                                        fillLocation.z++;
+                                    }
+//                                    fillLocation.x++;
+                                }
+                            }
                             Location location = new Location(world, chunk.getX() * 16 + x, finalY, chunk.getZ() * 16 + z);
                             EusBlueprintOperation.placeBlueprint(structure.getBlueprint(), location);
 //                            plugin.getLogger().info("Structure generated at " + new XYZ(location).toString()));
