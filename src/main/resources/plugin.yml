@@ -1,0 +1,16 @@
+name: EusFlatLand
+version: ${project.version}
+main: cc.eumc.eusflatland.EusFlatLand
+api-version: 1.16
+load: STARTUP
+authors: [ EucalyptusLeaves ]
+website: www.eumc.cc
+commands:
+  flatland:
+permissions:
+  flatland.admin:
+    default: op
+    description: Permission for FlatLand management commands
+  flatland.allowOutside:
+    default: op
+    description: Permission for moving outside the borders
