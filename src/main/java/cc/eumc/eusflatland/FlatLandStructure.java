@@ -7,14 +7,16 @@ import org.bukkit.block.Biome;
 public class FlatLandStructure {
     EusBlueprint blueprint;
     int yOffset;
+    Integer minimumGenerationHeight;
     Material[] placeOnMaterials;
     Material fillBaseWith;
     Biome[] biomes;
     int chance;
 
-    public FlatLandStructure(EusBlueprint blueprint, int yOffset, Material[] placeOnMaterials, Material fillBaseWith, Biome[] biomes, int chance) {
+    public FlatLandStructure(EusBlueprint blueprint, int yOffset, Integer minimumGenerationHeight, Material[] placeOnMaterials, Material fillBaseWith, Biome[] biomes, int chance) {
         this.blueprint = blueprint;
         this.yOffset = yOffset;
+        this.minimumGenerationHeight = minimumGenerationHeight;
         this.placeOnMaterials = placeOnMaterials;
         this.fillBaseWith = fillBaseWith;
         this.biomes = biomes;
@@ -27,6 +29,10 @@ public class FlatLandStructure {
 
     public int getYOffset() {
         return yOffset;
+    }
+
+    public Integer getMinimumGenerationHeight() {
+        return minimumGenerationHeight;
     }
 
     public Material[] getPlaceOnMaterials() {

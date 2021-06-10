@@ -19,6 +19,7 @@
   },
   "desert_pyramid.blueprint": {
     "yOffset": -14,
+    "minimumGenerationHeight": 20,
     "placeOnMaterials": [
       "SAND"
     ],
@@ -30,6 +31,7 @@
   },
   "ender_portal.blueprint": {
     "yOffset": -40,
+    "minimumGenerationHeight": 60,
     "placeOnMaterials": null,
     "fillBaseWith": null,
     "biomes": null,
@@ -136,6 +138,7 @@
   },
   "snow_house.blueprint": {
     "yOffset": 0,
+    "minimumGenerationHeight": 130,
     "placeOnMaterials": [
       "GRASS_BLOCK"
     ],

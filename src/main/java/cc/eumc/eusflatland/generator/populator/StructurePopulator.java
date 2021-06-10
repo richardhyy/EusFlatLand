@@ -42,17 +42,19 @@ public class StructurePopulator extends BlockPopulator {
 //                plugin.getLogger().info(String.format("%s, %s, %s : %s [%s]", x, y, z, groundMaterial, groundBiome));
 
                 if (y > 1) {
+                    // Check height
+                    if (structure.getMinimumGenerationHeight() != null && structure.getMinimumGenerationHeight() > y) {
+                        continue;
+                    }
                     // Check ground material
                     if (structure.getPlaceOnMaterials() != null && structure.getPlaceOnMaterials().length > 0) {
                         if (Arrays.stream(structure.getPlaceOnMaterials()).noneMatch(m -> groundMaterial == m)) {
-//                            plugin.getLogger().info("X - Check ground material: " + structure.getPlaceOnMaterials().toString());
                             continue;
                         }
                     }
                     // Check ground biome
                     if (structure.getBiomes() != null && structure.getBiomes().length > 0) {
                         if (Arrays.stream(structure.getBiomes()).noneMatch(b -> groundBiome == b)) {
-//                            plugin.getLogger().info("X - Check ground biomes: " + structure.getBiomes().toString());
                             continue;
                         }
                     }
@@ -65,7 +67,6 @@ public class StructurePopulator extends BlockPopulator {
                         public void run() {
                             // Fill base
                             if (structure.getFillBaseWith() != null) {
-//                                XYZ fillLocation = new XYZ(chunk.getX() * 16 + x, finalY - 1, chunk.getZ() * 16 + z);
                                 int xBase = chunk.getX() * 16;
                                 int zBase = chunk.getZ() * 16;
                                 for (int _x = xBase + x; _x <= xBase + x + structure.getBlueprint().getXWidth() - 1; _x++) {
@@ -77,11 +78,8 @@ public class StructurePopulator extends BlockPopulator {
                                             } else {
                                                 break;
                                             }
-//                                            fillLocation.y--;
                                         }
-//                                        fillLocation.z++;
                                     }
-//                                    fillLocation.x++;
                                 }
                             }
                             Location location = new Location(world, chunk.getX() * 16 + x, finalY, chunk.getZ() * 16 + z);
