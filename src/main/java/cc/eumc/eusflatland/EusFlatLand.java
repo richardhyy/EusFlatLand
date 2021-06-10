@@ -1,10 +1,14 @@
 package cc.eumc.eusflatland;
 
+import cc.eumc.eusflatland.blueprint.EusBlueprint;
 import cc.eumc.eusflatland.command.AdminCommandExecutor;
 import cc.eumc.eusflatland.event.GrowListener;
 import cc.eumc.eusflatland.event.PlayerListener;
 import cc.eumc.eusflatland.generator.FlatLandGenerator;
-import org.bukkit.Bukkit;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bukkit.Location;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 public final class EusFlatLand extends JavaPlugin {
     final int chunkZ = 0;
@@ -46,7 +57,52 @@ public final class EusFlatLand extends JavaPlugin {
 
     @Override
     public @NotNull ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
-        return new FlatLandGenerator(this);
+        List<FlatLandStructure> structures = new ArrayList<>();
+        try {
+            structures.addAll(loadStructures());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new FlatLandGenerator(this, structures);
+    }
+
+    private @NotNull List<FlatLandStructure> loadStructures() throws Exception {
+        File structureMeta = new File(getDataFolder() + "/structureMeta.json");
+        if (!structureMeta.exists()) {
+            try {
+                extractResource("default_structures.json", structureMeta.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JsonElement jelement = new JsonParser().parse(new FileReader(structureMeta));
+        JsonObject jobject = jelement.getAsJsonObject();
+
+        Set<Map.Entry<String, JsonElement>> structureElements = jobject.entrySet();
+        List<FlatLandStructure> structures = new ArrayList<>();
+        for (Map.Entry<String, JsonElement> structureKV : structureElements) {
+            File blueprintFile = new File(blueprintFolder + "/" + structureKV.getKey());
+            if (!blueprintFile.exists()) {
+                // TODO: NOT EXIST MSG
+                extractResource(structureKV.getKey(), blueprintFile.toPath());
+                continue;
+            }
+            EusBlueprint blueprint = EusBlueprint.loadBlueprint(blueprintFile);
+            JsonObject value = structureKV.getValue().getAsJsonObject();
+            FlatLandStructure structure = new Gson().fromJson(value.toString(), FlatLandStructure.class);
+            structure.blueprint = blueprint;
+            structures.add(structure);
+            getLogger().info("Loaded: " + structureKV.getKey() + ": " + structureKV.getValue());
+        }
+
+        return structures;
+    }
+
+    private void extractResource(String filename, Path path) throws IOException {
+        InputStream in = getResource(filename);
+        Files.copy(Objects.requireNonNull(in), path, StandardCopyOption.REPLACE_EXISTING);
     }
 
     public int getChunkZ() {

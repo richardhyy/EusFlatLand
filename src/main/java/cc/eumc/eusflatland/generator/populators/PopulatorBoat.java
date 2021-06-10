@@ -49,7 +49,7 @@
 //        int rx = random.nextInt(16) + 16 * source.getX();
 //        int rz = random.nextInt(16) + 16 * source.getZ();
 //
-//        if(world.getBiome(rx, rz) != Biome.COLD_OCEAN) return;
+//        if(world.getBiomes(rx, rz) != Biome.COLD_OCEAN) return;
 //        Block chest = boat.place(world, source);
 //        if(chest != null) {
 //            InventoryHolder ih = (InventoryHolder) chest.getState();

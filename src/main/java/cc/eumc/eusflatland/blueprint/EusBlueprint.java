@@ -1,10 +1,8 @@
 package cc.eumc.eusflatland.blueprint;
 
-import cc.eumc.eusflatland.util.KeyValue;
 import cc.eumc.eusflatland.util.XYZ;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.io.File;
@@ -14,7 +12,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 
 public class EusBlueprint implements Serializable {
     private XYZ rawOrigin;
@@ -93,5 +90,17 @@ public class EusBlueprint implements Serializable {
      */
     public String[][][] getBlocks() {
         return blocks;
+    }
+
+    public int getXWidth() {
+        return blocks.length;
+    }
+
+    public int getYWidth() {
+        return blocks[0].length;
+    }
+
+    public int getZWidth() {
+        return blocks[0][0].length;
     }
 }

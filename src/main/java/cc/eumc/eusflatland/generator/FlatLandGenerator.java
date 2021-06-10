@@ -1,8 +1,10 @@
 package cc.eumc.eusflatland.generator;
 
 import cc.eumc.eusflatland.EusFlatLand;
+import cc.eumc.eusflatland.FlatLandStructure;
 import cc.eumc.eusflatland.generator.populator.GrassPopulator;
 import cc.eumc.eusflatland.generator.populator.SaplingPopulator;
+import cc.eumc.eusflatland.generator.populator.StructurePopulator;
 import cc.eumc.eusflatland.generator.populators.*;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,10 +19,12 @@ import java.util.Random;
 
 public class FlatLandGenerator extends ChunkGenerator {
     EusFlatLand plugin;
+    List<FlatLandStructure> structures;
 //    int currentHeight = 64;
 
-    public FlatLandGenerator(EusFlatLand plugin) {
+    public FlatLandGenerator(EusFlatLand plugin, List<FlatLandStructure> structures) {
         this.plugin = plugin;
+        this.structures = structures;
     }
 
     @Override
@@ -70,6 +74,7 @@ public class FlatLandGenerator extends ChunkGenerator {
         populators.add(new GrassPopulator(plugin));
         populators.add(new PopulatorLonggrass());
         populators.add(new PopulatorMushrooms());
+        populators.add(new StructurePopulator(plugin, structures));
 //        switch (environment) {
 //            case NORMAL:
 ////                populators.add(new BiomeTreePopulator());

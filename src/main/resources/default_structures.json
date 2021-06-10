@@ -1,0 +1,201 @@
+{
+  "big_house1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "church1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 45
+  },
+  "desert_pyramid.blueprint": {
+    "yOffset": -14,
+    "placeOnMaterials": [
+      "SAND"
+    ],
+    "fillBaseWith": "STONE",
+    "biomes": [
+      "DESERT"
+    ],
+    "chance": 40
+  },
+  "ender_portal.blueprint": {
+    "yOffset": -40,
+    "placeOnMaterials": null,
+    "fillBaseWith": null,
+    "biomes": null,
+    "chance": 1
+  },
+  "fountain.blueprint": {
+    "yOffset": 0,
+    "fillBaseWith": "DIRT",
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "biomes": [
+      "DESERT"
+    ],
+    "chance": 40
+  },
+  "haystack1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 25
+  },
+  "haystack2.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 25
+  },
+  "parterre.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house2.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house3.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house4.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house5.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "small_house_deserted1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "snow_house.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": [
+      "SNOWY_TUNDRA",
+      "SNOWY_MOUNTAINS",
+      "SNOWY_TAIGA",
+      "SNOWY_TAIGA_HILLS",
+      "SNOWY_TAIGA_MOUNTAINS",
+      "SNOWY_TUNDRA"
+    ],
+    "chance": 40
+  },
+  "street_light.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 40
+  },
+  "street_light_2.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "vegetable_field1.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "vegetable_field2.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 30
+  },
+  "well.blueprint": {
+    "yOffset": 0,
+    "placeOnMaterials": [
+      "GRASS_BLOCK",
+      "SAND"
+    ],
+    "fillBaseWith": "DIRT",
+    "biomes": null,
+    "chance": 50
+  }
+}
