@@ -3,6 +3,7 @@ package cc.eumc.eusflatland.generator.populator;
 import cc.eumc.eusflatland.EusFlatLand;
 import cc.eumc.eusflatland.FlatLandStructure;
 import cc.eumc.eusflatland.blueprint.EusBlueprintOperation;
+import cc.eumc.eusflatland.util.XYZ;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,27 +38,30 @@ public class StructurePopulator extends BlockPopulator {
         for (FlatLandStructure structure : structures) {
             int dice = random.nextInt(1000);
             if (dice < structure.getChance()) {
-                int x = random.nextInt(15);
-                int z = plugin.getMinLandZ();
-                int y = limitedRegion.getHighestBlockYAt(chunkX * 16 + x, chunkZ * 16 + z);
+                int x = chunkX * 16 + random.nextInt(15);
+                int z = chunkZ * 16 + plugin.getMinLandZ();
+                int y = limitedRegion.getHighestBlockYAt(x, z);
                 Material groundMaterial = limitedRegion.getBlockData(x, y, z).getMaterial();
                 Biome groundBiome = limitedRegion.getBiome(x, y, z);
-//                plugin.getLogger().info(String.format("%s, %s, %s : %s [%s]", x, y, z, groundMaterial, groundBiome));
+                plugin.getLogger().info(String.format("%s, %s, %s : %s [%s]", x, y, z, groundMaterial, groundBiome));
 
                 if (y > 1) {
                     // Check height
                     if (structure.getMinimumGenerationHeight() != null && structure.getMinimumGenerationHeight() > y) {
+                        plugin.getLogger().info("Too low");
                         continue;
                     }
                     // Check ground material
                     if (structure.getPlaceOnMaterials() != null && structure.getPlaceOnMaterials().length > 0) {
                         if (Arrays.stream(structure.getPlaceOnMaterials()).noneMatch(m -> groundMaterial == m)) {
+                            plugin.getLogger().info("Ground material not match: " + groundMaterial);
                             continue;
                         }
                     }
                     // Check ground biome
                     if (structure.getBiomes() != null && structure.getBiomes().length > 0) {
                         if (Arrays.stream(structure.getBiomes()).noneMatch(b -> groundBiome == b)) {
+                            plugin.getLogger().info("Ground biome not match");
                             continue;
                         }
                     }
@@ -65,19 +69,17 @@ public class StructurePopulator extends BlockPopulator {
                     // Place!
                     y += structure.getYOffset() + 1;
                     final int finalY = y;
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                        @Override
-                        public void run() {
+//                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//                        @Override
+//                        public void run() {
                             // Fill base
                             if (structure.getFillBaseWith() != null) {
-                                int xBase = chunkX * 16;
-                                int zBase = chunkZ * 16;
-                                for (int _x = xBase + x; _x <= xBase + x + structure.getBlueprint().getXWidth() - 1; _x++) {
-                                    for (int _z = zBase + z; _z <= zBase + z + structure.getBlueprint().getZWidth() - 1; _z++) {
+                                for (int _x = x; _x <= x + structure.getBlueprint().getXWidth() - 1; _x++) {
+                                    for (int _z = z; _z <= z + structure.getBlueprint().getZWidth() - 1; _z++) {
                                         for (int _y = finalY - 1; _y > 2; _y--) {
-                                            BlockData toFill = limitedRegion.getBlockData(_x, _y, _z);
+                                            BlockData toFill = limitedRegion.getWorld().getBlockData(_x, _y, _z);
                                             if (toFill.getMaterial() == Material.AIR || toFill.getMaterial() == Material.WATER) {
-                                                limitedRegion.setType(_x, _y, _z, structure.getFillBaseWith());
+                                                limitedRegion.getWorld().setType(_x, _y, _z, structure.getFillBaseWith());
                                             } else {
                                                 break;
                                             }
@@ -85,12 +87,16 @@ public class StructurePopulator extends BlockPopulator {
                                     }
                                 }
                             }
-                            Location location = new Location(limitedRegion.getWorld(), chunkX * 16 + x, finalY, chunkZ * 16 + z);
+                            Location location = new Location(limitedRegion.getWorld(), x, finalY, z);
                             EusBlueprintOperation.placeBlueprint(structure.getBlueprint(), location);
-//                            plugin.getLogger().info("Structure generated at " + new XYZ(location).toString()));
-                        }
-                    });
+                            plugin.getLogger().info("Structure generated at " + new XYZ(location).toString());
+//                        }
+//                    });
+
+                    structures.sort((a, b) -> random.nextInt(3) - 1);
                     break;
+                } else {
+                    plugin.getLogger().info("Highest block too low: " + y);
                 }
             }
         }
