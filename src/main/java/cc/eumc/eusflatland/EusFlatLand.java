@@ -3,6 +3,7 @@ package cc.eumc.eusflatland;
 import cc.eumc.eusflatland.blueprint.EusBlueprint;
 import cc.eumc.eusflatland.command.AdminCommandExecutor;
 import cc.eumc.eusflatland.event.BuildLimitListener;
+import cc.eumc.eusflatland.event.CustomWallListener;
 import cc.eumc.eusflatland.event.GrowListener;
 import cc.eumc.eusflatland.event.PlayerListener;
 import cc.eumc.eusflatland.generator.FlatLandGenerator;
@@ -49,6 +50,7 @@ public final class EusFlatLand extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GrowListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BuildLimitListener(this), this);
+        getServer().getPluginManager().registerEvents(new CustomWallListener(this), this);
         getCommand("flatland").setExecutor(new AdminCommandExecutor(this));
     }
 
