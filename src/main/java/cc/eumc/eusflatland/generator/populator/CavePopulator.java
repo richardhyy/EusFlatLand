@@ -7,14 +7,17 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
+import org.jetbrains.annotations.NotNull;
 
 public class CavePopulator extends BlockPopulator {
 	EusFlatLand plugin;
 
 	private int maxCaveHeight;
 	private int caveCentre;
-	
+
 	public CavePopulator(EusFlatLand plugin, int maxCaveHeight, int caveDistanceFromMaxHeight) {
 		this.maxCaveHeight = maxCaveHeight;
 		this.caveCentre = caveDistanceFromMaxHeight;
@@ -22,25 +25,25 @@ public class CavePopulator extends BlockPopulator {
 	}
 
 	@Override
-	public void populate(World world, Random random, Chunk source) {
-		if (source.getZ() != plugin.getChunkZ()) {
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
+		if (chunkZ != plugin.getChunkZ()) {
 			return;
 		}
-		int worldChunkX = source.getX() * 16;
-		int worldChunkZ = source.getZ() * 16;
+		int worldChunkX = chunkX * 16;
+		int worldChunkZ = chunkZ * 16;
 		int x, y, z;
-		SimplexOctaveGenerator noiseGenerator = new SimplexOctaveGenerator(world, 8);
+		SimplexOctaveGenerator noiseGenerator = new SimplexOctaveGenerator(limitedRegion.getWorld(), 8);
 		noiseGenerator.setScale(1 / 32.0);
 		for (x = worldChunkX; x < worldChunkX + 16; x++) {
 			for (z = worldChunkZ; z < worldChunkZ + plugin.getMaxLandZ() + 16; z++) {
-				for (y = world.getMaxHeight() - caveCentre; y > world.getMaxHeight() - (caveCentre + (noiseGenerator.noise(x, z, 0.5, 0.5) * (maxCaveHeight / 2))); y--) {
-					if (world.getBlockAt(x, y, z).getType() == Material.STONE || world.getBlockAt(x, y, z).getType() == Material.SANDSTONE || world.getBlockAt(x, y, z).getType() == Material.DIRT) {
-						world.getBlockAt(x, y, z).setType(Material.AIR);
+				for (y = limitedRegion.getWorld().getMaxHeight() - caveCentre; y > limitedRegion.getWorld().getMaxHeight() - (caveCentre + (noiseGenerator.noise(x, z, 0.5, 0.5) * ((double) maxCaveHeight / 2))); y--) {
+					if (limitedRegion.getBlockData(x, y, z).getMaterial() == Material.STONE || limitedRegion.getBlockData(x, y, z).getMaterial() == Material.SANDSTONE || limitedRegion.getBlockData(x, y, z).getMaterial() == Material.DIRT) {
+						limitedRegion.setType(x, y, z, Material.AIR);
 					}
 				}
-				for (y = world.getMaxHeight() - caveCentre; y < world.getMaxHeight() - (caveCentre - (noiseGenerator.noise(x, z, 0.5, 0.5) * (maxCaveHeight / 2))); y++) {
-					if (world.getBlockAt(x, y, z).getType() == Material.STONE || world.getBlockAt(x, y, z).getType() == Material.SANDSTONE || world.getBlockAt(x, y, z).getType() == Material.DIRT) {
-						world.getBlockAt(x, y, z).setType(Material.AIR);
+				for (y = limitedRegion.getWorld().getMaxHeight() - caveCentre; y < limitedRegion.getWorld().getMaxHeight() - (caveCentre - (noiseGenerator.noise(x, z, 0.5, 0.5) * ((double) maxCaveHeight / 2))); y++) {
+					if (limitedRegion.getBlockData(x, y, z).getMaterial() == Material.STONE || limitedRegion.getBlockData(x, y, z).getMaterial() == Material.SANDSTONE || limitedRegion.getBlockData(x, y, z).getMaterial() == Material.DIRT) {
+						limitedRegion.setType(x, y, z, Material.AIR);
 					}
 				}
 			}

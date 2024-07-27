@@ -79,7 +79,7 @@ public class AdminCommandExecutor implements CommandExecutor, TabExecutor {
                             locations = new XYZ[2];
                         }
 
-                        Block block = player.getTargetBlock(10);
+                        Block block = player.getTargetBlockExact(10);
                         if (block == null) {
                             sendMessage(sender, "§eNo block targeted.");
                             break;

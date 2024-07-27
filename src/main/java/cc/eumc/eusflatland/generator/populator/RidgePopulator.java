@@ -8,17 +8,20 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
+import org.jetbrains.annotations.NotNull;
 
 public class RidgePopulator extends BlockPopulator {
-	
+
 	private Material landMaterial;
 	private Material tempMaterial;
 	private int ridgeWidth;
-	
+
 	public RidgePopulator(Material landMaterial, int ridgeWidth) {
 		this(landMaterial, Material.BEDROCK, ridgeWidth);
 	}
-	
+
 	public RidgePopulator(Material landMaterial, Material tempMaterial, int ridgeWidth) {
 		this.landMaterial = landMaterial;
 		this.tempMaterial = tempMaterial;
@@ -26,20 +29,20 @@ public class RidgePopulator extends BlockPopulator {
 	}
 
 	@Override
-	public void populate(World world, Random random, Chunk source) {
-		int worldChunkX = source.getX() * 16;
-		int worldChunkZ = source.getZ() * 16;
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
+		int worldChunkX = chunkX * 16;
+		int worldChunkZ = chunkZ * 16;
 		byte[] heights = new byte[256];
-		int x = worldChunkX;
-		int y = world.getMaxHeight();
-		int z = worldChunkZ;
+		int x;
+		int y;
+		int z = chunkZ;
 		int height = 0;
 		int i = 0;
 		for (x = worldChunkX; x < worldChunkX + 16; x++) {
 			for (z = worldChunkZ; z < worldChunkZ + 16; z++) {
-				y = world.getMaxHeight();
+				y = limitedRegion.getWorld().getMaxHeight();
 				height = 0;
-				while (world.getBlockAt(x, y, z).getType() != Material.AIR && y > 0) {
+				while (limitedRegion.getBlockData(x, y, z).getMaterial() != Material.AIR && y > 0) {
 					y--;
 					height++;
 				}
@@ -48,14 +51,14 @@ public class RidgePopulator extends BlockPopulator {
 			}
 		}
 		int medianHeight = getMedian(heights);
-		addEdge(world, x, world.getMaxHeight() - medianHeight, z, worldChunkX, worldChunkZ, ridgeWidth);
+		addEdge(limitedRegion.getWorld(), x, limitedRegion.getWorld().getMaxHeight() - medianHeight, z, worldChunkX, worldChunkZ, ridgeWidth);
 	}
-	
+
 	private byte getMedian(byte[] heights) {
 		Arrays.sort(heights);
 		return heights[heights.length / 2];
 	}
-	
+
 	private void addEdge(World world, int x, int y, int z, int worldChunkX, int worldChunkZ, int blocks) {
 		for (x = worldChunkX; x < worldChunkX + 16; x++) {
 			for (z = worldChunkZ; z < worldChunkZ + 16; z++) {

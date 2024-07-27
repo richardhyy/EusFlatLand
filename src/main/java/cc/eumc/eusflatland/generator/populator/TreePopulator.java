@@ -3,26 +3,34 @@ package cc.eumc.eusflatland.generator.populator;
 import java.util.Random;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
+import org.jetbrains.annotations.NotNull;
 
 public class TreePopulator extends BlockPopulator {
-	
+
 	private TreeType treeType;
 	private int treesPerChunk;
-	
+
 	public TreePopulator(TreeType treeType, int treesPerChunk) {
 		this.treeType = treeType;
 		this.treesPerChunk = treesPerChunk;
 	}
 
 	@Override
-	public void populate(World world, Random random, Chunk chunk) {
-		int worldChunkX = chunk.getX();
-		int worldChunkZ = chunk.getZ();
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
+
 		for (int i = 0; i < treesPerChunk; i++) {
-			world.generateTree(world.getHighestBlockAt(worldChunkX + random.nextInt(16), worldChunkZ + random.nextInt(16)).getLocation(), treeType);
+			Location location = new Location(
+					limitedRegion.getWorld(),
+					chunkX + random.nextInt(16),
+					limitedRegion.getHighestBlockYAt(chunkX + random.nextInt(16), chunkZ + random.nextInt(16)),
+					chunkZ + random.nextInt(16));
+			limitedRegion.generateTree(location, random, treeType);
 		}
 	}
 

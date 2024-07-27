@@ -2,6 +2,7 @@ package cc.eumc.eusflatland.blueprint;
 
 import cc.eumc.eusflatland.util.XYZ;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import org.bukkit.block.Block;
 
@@ -23,7 +24,7 @@ public class EusBlueprint implements Serializable {
     }
 
     public static void saveBlueprint(Path path, EusBlueprint blueprint) throws IOException {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Files.write(path, gson.toJson(blueprint).trim().getBytes(StandardCharsets.UTF_8));
     }
 

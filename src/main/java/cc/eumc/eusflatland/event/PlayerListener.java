@@ -17,18 +17,38 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
-        if (!player.hasPermission("flatland.allowOutside")) {
-            Location location = player.getLocation();
-            if (Math.floor(location.getY()) > plugin.getMaxPlayerHeight()) {
-                location.setY(plugin.getMaxPlayerHeight());
-                player.teleport(location);
+        if (!player.hasPermission("flatland.allowOutsideMove")) {
+            Location from = e.getFrom();
+            Location to = e.getTo();
+
+            boolean needsTeleport = false;
+            double newY = to.getY();
+            double newZ = to.getZ();
+
+            // Check Y coordinate
+            if (Math.floor(newY) > plugin.getMaxPlayerHeight()) {
+                newY = plugin.getMaxPlayerHeight();
+                needsTeleport = true;
             }
-            if (location.getZ() < plugin.getMinLandZ()) {
-                location.setZ(plugin.getMinLandZ());
-                player.teleport(location);
-            } else if (location.getZ() > plugin.getMaxLandZ() + 1) {
-                location.setZ(plugin.getMaxLandZ());
-                player.teleport(location);
+
+            // Check Z coordinate
+            int chunkZ = plugin.getChunkZ();
+            int minZ = chunkZ * 16;
+            int maxZ = (chunkZ + 1) * 16 - 1;
+
+            if (newZ < minZ) {
+                newZ = minZ;
+                needsTeleport = true;
+            } else if (newZ > maxZ) {
+                newZ = maxZ;
+                needsTeleport = true;
+            }
+
+            // Teleport if needed
+            if (needsTeleport) {
+                Location safeLocation = new Location(to.getWorld(), to.getX(), newY, newZ, to.getYaw(), to.getPitch());
+                player.teleport(safeLocation);
+                e.setCancelled(true);
             }
         }
     }

@@ -1,18 +1,18 @@
 /*
  * Copyright 2012 s1mpl3x
- * 
+ *
  * This file is part of Nordic.
- * 
+ *
  * Nordic is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * Nordic is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Nordic If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,13 +24,16 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
 public class PopulatorMushrooms extends BlockPopulator {
 
 	@Override
-	public void populate(final World world, final Random random, final Chunk source) {
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
 		final int chance = random.nextInt(100);
 		if (chance < 7) {
 			final int type = random.nextInt(100);
@@ -44,7 +47,7 @@ public class PopulatorMushrooms extends BlockPopulator {
 			int placed = 0;
 				for (int flower_x = 1; flower_x < 15; flower_x++) {
 					for (int flower_z = 1; flower_z < 15; flower_z++) {
-						final Block handle = world.getBlockAt(flower_x + source.getX() * 16, getHighestEmptyBlockYAtIgnoreTreesAndFoliage(world, flower_x + source.getX() * 16, flower_z + source.getZ() * 16), flower_z + source.getZ() * 16);
+						final Block handle = limitedRegion.getWorld().getBlockAt(flower_x + chunkX * 16, getHighestEmptyBlockYAtIgnoreTreesAndFoliage(limitedRegion.getWorld(), flower_x + chunkX * 16, flower_z + chunkZ * 16), flower_z + chunkZ * 16);
 						if (handle.getRelative(BlockFace.DOWN).getType().equals(Material.GRASS_BLOCK) && handle.isEmpty()) {
 							handle.setType(mushroom);
 							placed++;

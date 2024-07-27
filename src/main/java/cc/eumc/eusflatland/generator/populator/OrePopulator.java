@@ -9,6 +9,9 @@ import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
 
 import org.bukkit.Material;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
+import org.jetbrains.annotations.NotNull;
 
 public class OrePopulator extends BlockPopulator {
 	EusFlatLand plugin;
@@ -17,7 +20,7 @@ public class OrePopulator extends BlockPopulator {
 	private Material replaceType;
 	private int pocketsPerChunk;
 	private int maxPocketSize;
-	
+
 	public OrePopulator(EusFlatLand plugin, Material oreType, Material replaceType, int pocketsPerChunk, int maxPocketSize) {
 		this.oreType = oreType;
 		this.replaceType = replaceType;
@@ -71,16 +74,16 @@ public class OrePopulator extends BlockPopulator {
 	}
 
 	@Override
-	public void populate(World world, Random random, Chunk chunk) {
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
 		int x, y, z, i;
-		int worldChunkX = chunk.getX() * 16;
-		int worldChunkZ = chunk.getZ() * 16;
+		int worldChunkX = chunkX * 16;
+		int worldChunkZ = chunkZ * 16;
 		for (i = 0; i < pocketsPerChunk; i++) {
 			x = worldChunkX + random.nextInt(16);
 			z = worldChunkZ + random.nextInt(16);
 			y = random.nextInt(128);
 			if (z >= plugin.getMinLandZ() && z <= plugin.getMaxLandZ()) {
-				this.createPocket(world, maxPocketSize, x, y, z);
+				this.createPocket(limitedRegion.getWorld(), maxPocketSize, x, y, z);
 			}
 		}
 	}

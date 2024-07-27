@@ -7,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.LimitedRegion;
+import org.bukkit.generator.WorldInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,21 +35,21 @@ public class PopulatorCaves extends BlockPopulator {
 	 * Random, Chunk)
 	 */
 	@Override
-	public void populate(final World world, final Random random, final Chunk source) {
+	public void populate(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull LimitedRegion limitedRegion) {
 
 		if (random.nextInt(100) < 3) {
-			final int x = 4 + random.nextInt(8) + source.getX() * 16;
+			final int x = 4 + random.nextInt(8) + chunkX * 16;
 			final int z = Math.max(plugin.getMinLandZ(), random.nextInt(plugin.getMaxLandZ() + 1));
-			int maxY = world.getHighestBlockYAt(x, z);
+			int maxY = limitedRegion.getWorld().getHighestBlockYAt(x, z);
 			if (maxY < 16) {
 				maxY = 32;
 			}
 
 			final int y = random.nextInt(maxY);
-			final Set<XYZ> snake = selectBlocksForCave(world, random, x, y, z);
-			buildCave(world, snake.toArray(new XYZ[snake.size()]));
+			final Set<XYZ> snake = selectBlocksForCave(limitedRegion.getWorld(), random, x, y, z);
+			buildCave(limitedRegion.getWorld(), snake.toArray(new XYZ[snake.size()]));
 			for (final XYZ block : snake) {
-				world.unloadChunkRequest(block.x / 16, block.z / 16);
+				limitedRegion.getWorld().unloadChunkRequest(block.x / 16, block.z / 16);
 			}
 		}
 	}

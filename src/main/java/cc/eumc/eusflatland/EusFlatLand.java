@@ -2,6 +2,7 @@ package cc.eumc.eusflatland;
 
 import cc.eumc.eusflatland.blueprint.EusBlueprint;
 import cc.eumc.eusflatland.command.AdminCommandExecutor;
+import cc.eumc.eusflatland.event.BuildLimitListener;
 import cc.eumc.eusflatland.event.GrowListener;
 import cc.eumc.eusflatland.event.PlayerListener;
 import cc.eumc.eusflatland.generator.FlatLandGenerator;
@@ -26,8 +27,8 @@ import java.util.*;
 
 public final class EusFlatLand extends JavaPlugin {
     final int chunkZ = 0;
-    final int minLandZ = 1; // No less than 1
-    final int maxLandZ = 3; // No more than 14
+    final int minLandZ = 7; // No less than 1
+    final int maxLandZ = 9; // No more than 14
     final int maxPlayerHeight = 245;
 
     private String blueprintFolder;
@@ -47,6 +48,7 @@ public final class EusFlatLand extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new GrowListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new BuildLimitListener(this), this);
         getCommand("flatland").setExecutor(new AdminCommandExecutor(this));
     }
 
