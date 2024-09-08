@@ -7,6 +7,7 @@ import cc.eumc.eusflatland.event.CustomWallListener;
 import cc.eumc.eusflatland.event.GrowListener;
 import cc.eumc.eusflatland.event.PlayerListener;
 import cc.eumc.eusflatland.generator.FlatLandGenerator;
+import cc.eumc.eusflatland.generator.SliceRandomizer;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,12 +28,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public final class EusFlatLand extends JavaPlugin {
-    final int chunkZ = 0;
     final int minLandZ = 7; // No less than 1
     final int maxLandZ = 9; // No more than 14
     final int maxPlayerHeight = 245;
 
     private String blueprintFolder;
+    private SliceRandomizer sliceRandomizer;
 
     public String getBlueprintFolder() {
         return blueprintFolder;
@@ -50,7 +51,7 @@ public final class EusFlatLand extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GrowListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new BuildLimitListener(this), this);
-        getServer().getPluginManager().registerEvents(new CustomWallListener(this), this);
+//        getServer().getPluginManager().registerEvents(new CustomWallListener(this), this);
         getCommand("flatland").setExecutor(new AdminCommandExecutor(this));
     }
 
@@ -68,7 +69,13 @@ public final class EusFlatLand extends JavaPlugin {
             e.printStackTrace();
         }
 
-        return new FlatLandGenerator(this);
+        sliceRandomizer = new SliceRandomizer(this, 42,
+                                              10, 30,
+                                              1, 32,
+                                              500,
+                                              1, 20);
+
+        return new FlatLandGenerator(this, sliceRandomizer);
     }
 
     private @NotNull List<FlatLandStructure> loadStructures() throws Exception {
@@ -109,8 +116,9 @@ public final class EusFlatLand extends JavaPlugin {
         Files.copy(Objects.requireNonNull(in), path, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    @Deprecated
     public int getChunkZ() {
-        return chunkZ;
+        return 0;
     }
 
     public int getMinLandZ() {
@@ -126,10 +134,10 @@ public final class EusFlatLand extends JavaPlugin {
     }
 
     public boolean isOnFlatLand(Location location) {
-        return isOnFlatLand(0, 0, location.getBlockZ());
+        return isOnFlatLand(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public boolean isOnFlatLand(int x, int y, int z) {
-        return (z >= minLandZ && z <= maxLandZ);
+        return sliceRandomizer.isLandSlice(z / 16) || sliceRandomizer.isTunnel(x / 16, z / 16);
     }
 }

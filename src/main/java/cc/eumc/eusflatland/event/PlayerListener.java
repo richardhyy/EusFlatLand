@@ -31,19 +31,6 @@ public class PlayerListener implements Listener {
                 needsTeleport = true;
             }
 
-            // Check Z coordinate
-            int chunkZ = plugin.getChunkZ();
-            int minZ = chunkZ * 16;
-            int maxZ = (chunkZ + 1) * 16 - 1;
-
-            if (newZ < minZ) {
-                newZ = minZ;
-                needsTeleport = true;
-            } else if (newZ > maxZ) {
-                newZ = maxZ;
-                needsTeleport = true;
-            }
-
             // Teleport if needed
             if (needsTeleport) {
                 Location safeLocation = new Location(to.getWorld(), to.getX(), newY, newZ, to.getYaw(), to.getPitch());

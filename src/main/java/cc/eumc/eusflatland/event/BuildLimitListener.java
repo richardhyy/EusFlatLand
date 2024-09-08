@@ -37,13 +37,9 @@ public class BuildLimitListener implements Listener {
             return true;
         }
 
-        int chunkZ = plugin.getChunkZ();
-        int minZ = chunkZ * 16;
-        int maxZ = (chunkZ + 1) * 16 - 1;
-
         double blockZ = location.getZ();
         double blockY = location.getY();
 
-        return blockZ >= minZ && blockZ <= maxZ && blockY <= plugin.getMaxPlayerHeight();
+        return blockY <= plugin.getMaxPlayerHeight() && plugin.isOnFlatLand(location);
     }
 }

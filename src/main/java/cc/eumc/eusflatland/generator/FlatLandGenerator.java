@@ -17,13 +17,9 @@ public class FlatLandGenerator extends ChunkGenerator {
     private final EusFlatLand plugin;
     private final SliceRandomizer sliceRandomizer;
 
-    public FlatLandGenerator(EusFlatLand plugin) {
+    public FlatLandGenerator(EusFlatLand plugin, SliceRandomizer sliceRandomizer) {
         this.plugin = plugin;
-        this.sliceRandomizer = new SliceRandomizer(plugin, 42,
-                10, 30,
-                1, 32,
-                500,
-                1, 20);
+        this.sliceRandomizer = sliceRandomizer;
     }
 
     private boolean isLandChunk(int chunkX, int chunkZ) {
