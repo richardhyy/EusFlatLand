@@ -1,14 +1,9 @@
 package cc.eumc.eusflatland.generator;
 
 import cc.eumc.eusflatland.EusFlatLand;
-import cc.eumc.eusflatland.FlatLandStructure;
-import cc.eumc.eusflatland.generator.populator.GrassPopulator;
-import cc.eumc.eusflatland.generator.populator.SaplingPopulator;
-import cc.eumc.eusflatland.generator.populator.StructurePopulator;
-import cc.eumc.eusflatland.generator.populators.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
@@ -18,129 +13,159 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 public class FlatLandGenerator extends ChunkGenerator {
     private final EusFlatLand plugin;
-    private final List<FlatLandStructure> structures;
+    private final SliceRandomizer sliceRandomizer;
 
-    public FlatLandGenerator(EusFlatLand plugin, List<FlatLandStructure> structures) {
+    public FlatLandGenerator(EusFlatLand plugin) {
         this.plugin = plugin;
-        this.structures = structures;
+        this.sliceRandomizer = new SliceRandomizer(plugin, 42,
+                10, 30,
+                1, 32,
+                500,
+                1, 20);
+    }
+
+    private boolean isLandChunk(int chunkX, int chunkZ) {
+        return sliceRandomizer.isLandSlice(chunkZ) || sliceRandomizer.isTunnel(chunkX, chunkZ);
     }
 
     private void fillBarrier(@NotNull WorldInfo worldInfo, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
-        if (chunkZ != plugin.getChunkZ()) {
-            plugin.getLogger().warning("fillBarrier: chunkZ (" + chunkZ + ") != plugin.getChunkZ() (" + plugin.getChunkZ() + ")");
+        if (!isLandChunk(chunkX, chunkZ)) {
             return;
         }
 
-        // Fill the bottom layer with barriers
-        chunkData.setRegion(0, worldInfo.getMinHeight(), 0, 16, worldInfo.getMinHeight() + 1, 16, Material.BARRIER);
+        int minHeight = worldInfo.getMinHeight();
+        int maxHeight = worldInfo.getMaxHeight();
 
-        // Fill the sides with barriers
+        // Fill the bottom layer with barriers
+        chunkData.setRegion(0, minHeight, 0, 16, minHeight + 1, 16, Material.BARRIER);
+
         int minLandZ = plugin.getMinLandZ();
         int maxLandZ = plugin.getMaxLandZ();
 
-        if (minLandZ > 0) {
-            chunkData.setRegion(0, worldInfo.getMinHeight(), 0, 16, worldInfo.getMaxHeight(), minLandZ, Material.BARRIER);
-        }
+        if (sliceRandomizer.isLandSlice(chunkZ)) {
+            SliceInfo sliceInfo = sliceRandomizer.getSliceInfo(chunkZ);
+            if (sliceInfo == null) {
+                plugin.getLogger().warning("fillBarrier: SliceInfo is null for chunkZ " + chunkZ);
+                return;
+            }
 
-        if (maxLandZ < 15) {
-            chunkData.setRegion(0, worldInfo.getMinHeight(), maxLandZ + 1, 16, worldInfo.getMaxHeight(), 16, Material.BARRIER);
+            // Fill the sides with barriers, accounting for tunnels
+            BlockFace[] tunnelDirections = sliceRandomizer.getTunnelAdjacentDirections(chunkZ, chunkX);
+
+            if (containsDirection(tunnelDirections, BlockFace.NORTH)) {
+                // North side is a tunnel
+                chunkData.setRegion(0, minHeight, 0,
+                                    minLandZ/*=X*/, maxHeight, minLandZ, Material.BARRIER);
+                chunkData.setRegion(maxLandZ/*=X*/ + 1, minHeight, 0,
+                                    16, maxHeight, minLandZ, Material.BARRIER);
+            } else {
+                // North side is not a tunnel, fill the whole side with barriers
+                chunkData.setRegion(0, minHeight, 0, 16, maxHeight, minLandZ, Material.BARRIER);
+            }
+
+            if (containsDirection(tunnelDirections, BlockFace.SOUTH)) {
+                // South side is a tunnel
+                chunkData.setRegion(0, minHeight, maxLandZ + 1,
+                                    minLandZ/*=X*/, maxHeight, 16, Material.BARRIER);
+                chunkData.setRegion(maxLandZ/*=X*/ + 1, minHeight, maxLandZ + 1,
+                                16, maxHeight, 16, Material.BARRIER);
+            } else {
+                // South side is not a tunnel, fill the whole side with barriers
+                chunkData.setRegion(0, minHeight, maxLandZ + 1, 16, maxHeight, 16, Material.BARRIER);
+            }
+        } else if (sliceRandomizer.isTunnel(chunkX, chunkZ)) {
+            // For tunnels, we need to fill barriers on the West and East sides
+            chunkData.setRegion(0, minHeight, 0,
+                                minLandZ/*=X*/, maxHeight, 16, Material.BARRIER);
+            chunkData.setRegion(maxLandZ/*=X*/ + 1, minHeight, 0,
+                            16, maxHeight, 16, Material.BARRIER);
         }
+    }
+
+    private boolean containsDirection(BlockFace[] directions, BlockFace direction) {
+        for (BlockFace face : directions) {
+            if (face == direction) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void generateNoise(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
-        if (chunkZ != plugin.getChunkZ()) {
+        if (!isLandChunk(chunkX, chunkZ)) {
             return;
         }
 
         super.generateNoise(worldInfo, random, chunkX, chunkZ, chunkData);
-
         fillBarrier(worldInfo, chunkX, chunkZ, chunkData);
     }
 
     @Override
     public void generateSurface(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
-        if (chunkZ != plugin.getChunkZ()) {
+        if (!isLandChunk(chunkX, chunkZ)) {
             return;
         }
 
         super.generateSurface(worldInfo, random, chunkX, chunkZ, chunkData);
-
         fillBarrier(worldInfo, chunkX, chunkZ, chunkData);
     }
 
     @Override
     public void generateBedrock(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
-        if (chunkZ != plugin.getChunkZ()) {
+        if (!isLandChunk(chunkX, chunkZ)) {
             return;
         }
 
         super.generateBedrock(worldInfo, random, chunkX, chunkZ, chunkData);
-
         fillBarrier(worldInfo, chunkX, chunkZ, chunkData);
     }
 
     @Override
     public void generateCaves(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
-        if (chunkZ != plugin.getChunkZ()) {
+        if (!isLandChunk(chunkX, chunkZ)) {
             return;
         }
 
         super.generateCaves(worldInfo, random, chunkX, chunkZ, chunkData);
-
         fillBarrier(worldInfo, chunkX, chunkZ, chunkData);
     }
 
     // Override these methods to control what aspects should be generated
     @Override
     public boolean shouldGenerateNoise(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public boolean shouldGenerateSurface(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public boolean shouldGenerateCaves(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public boolean shouldGenerateDecorations(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public boolean shouldGenerateMobs(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public boolean shouldGenerateStructures(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ) {
-        return plugin.getChunkZ() == chunkZ;
+        return isLandChunk(chunkX, chunkZ);
     }
 
     @Override
     public @NotNull List<BlockPopulator> getDefaultPopulators(@NotNull World world) {
-        return getPopulators(world.getEnvironment());
-    }
-
-    private List<BlockPopulator> getPopulators(World.Environment environment) {
-        ArrayList<BlockPopulator> populators = new ArrayList<>();
-//        populators.add(new PopulatorCaves(plugin));
-//        populators.add(new PopulatorGravel());
-//        populators.add(new PopulatorOres());
-//        populators.add(new SaplingPopulator(plugin));
-//        populators.add(new GrassPopulator(plugin));
-//        populators.add(new PopulatorLonggrass());
-//        populators.add(new PopulatorMushrooms());
-//        populators.add(new StructurePopulator(plugin, structures));
-
-        return populators;
+        return new ArrayList<>(); // No populators for now
     }
 }

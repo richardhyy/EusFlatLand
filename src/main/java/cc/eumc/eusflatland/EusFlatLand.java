@@ -68,7 +68,7 @@ public final class EusFlatLand extends JavaPlugin {
             e.printStackTrace();
         }
 
-        return new FlatLandGenerator(this, structures);
+        return new FlatLandGenerator(this);
     }
 
     private @NotNull List<FlatLandStructure> loadStructures() throws Exception {
